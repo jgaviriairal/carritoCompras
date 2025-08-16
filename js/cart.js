@@ -4,11 +4,38 @@ let iconCount = document.querySelector(".contar-pro");
 let btnProducts = document.querySelectorAll(".btn-product");
 let contentProducts = document.querySelector('.content-pro')
 let con = 1;
+let listCard = document.querySelector('.list-cart tbody')
+let btnCard =document.querySelector('.btn-cart')
 
 //evento al navegador
 document.addEventListener("DOMContentLoaded",()=>{
     getProductData();
 })
+
+
+
+//agregar evento al icono del carrito
+iconCart.addEventListener('click',()=>{
+
+    if(listCard.parentElement.style.display == 'none'){
+        listCard.parentElement.style.display = 'block';
+    }else
+    listCard.parentElement.style.display = 'none';
+})
+
+//agregar una funcion para guargar los producto del carrito en localstorage
+let storageProduct =(producto)=>{
+
+    let product= []
+    let productoPrevius = JSON.parse( localStorage.getItem('carrito'))
+    if (productoPrevius !=null) {
+        product = Object.values(productoPrevius);
+    }
+    product.push(producto)
+    localStorage.setItem('carrito',JSON.stringify(product));
+    location.href = 'cart.html'
+
+}
 
 let getInfoProduct = (id)=>{
     let product= []
@@ -16,13 +43,52 @@ let getInfoProduct = (id)=>{
     if (productoPrevius !=null) {
         product = Object.values(productoPrevius);
     }
-    console.log(product[id]);
-    
+
+    //console.log(product[id]);
+    //llamar funcion addProCart
+    addProCart(product[id]);
+    alert('producto agregado al carrito')
+    btnCard.addEventListener('click', ()=>{
+        storageProduct(product[id])
+    })
 
     
+    
+   
+    iconCount.textContent = con;
+    con++;
 
+    
 }
 
+//funcion para llevar  el producto al  carrito
+let addProCart=(pro)=>{
+    let row = document.createElement('tr')
+    row.innerHTML = `
+        <td>${con}</td>
+        <td><img src="${pro.imagen}" width="70px"> </td>
+        <td>${pro.nombre} </td>
+        <td>${pro.precio} </td>
+        <td><button onclick="deleteCard(${con})" type="button"class="btn btn-danger btn-delete">✖︎</button> </td>
+    
+    `
+    listCard.appendChild(row)
+}
+
+
+let deleteCard = (id)=>{
+    let btnEliminar = document.querySelectorAll('.btn-delete')
+    btnEliminar[(id-1)].parentElement.parentElement.remove();
+  
+
+    console.log(btnEliminar[(id-1)]);
+    if (Number(iconCount.textContent) > 0 ) {
+     iconCount.textContent = con--;   
+
+        
+    }
+    
+}
 
 //funcion para traer datos de bd
 let getProductData = async ()=>{

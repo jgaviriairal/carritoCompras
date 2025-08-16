@@ -788,4 +788,5 @@ input[type=date], input[type=text], input[type=email], input[type=file], input[t
     right: 0;
     width: 200px !important;
     background-color: rgba(107, 106, 106, 0.183);
+    display: none;
 }
